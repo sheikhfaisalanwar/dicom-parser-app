@@ -19,15 +19,9 @@ import (
 
 func TestNewDicomDocumentService(t *testing.T) {
 	store := mocks.NewIStorage(t)
-	s := NewDicomDocumentService(store)
+	repo := mocks.NewIRepository(t)
+	s := NewDicomDocumentService(store, repo)
 	assert.NotNil(t, s)
-}
-
-func TestGetDicomDocument(t *testing.T) {
-	store := mocks.NewIStorage(t)
-	s := NewDicomDocumentService(store)
-	result := s.GetDicomDocument()
-	assert.Equal(t, "Dicom Document", result)
 }
 
 func TestCreateDicomDocument(t *testing.T) {
@@ -36,7 +30,7 @@ func TestCreateDicomDocument(t *testing.T) {
 
 	tests := []struct {
 		input     client.CreateDicomDocumentRequest
-		setupMock func() *mocks.IStorage
+		setupMock func() (*mocks.IStorage, *mocks.IRepository)
 		want      models.DicomFile
 		wantErr   bool
 	}{
@@ -46,10 +40,15 @@ func TestCreateDicomDocument(t *testing.T) {
 					Filename: "test.dcm",
 				},
 			},
-			setupMock: func() *mocks.IStorage {
+			setupMock: func() (*mocks.IStorage, *mocks.IRepository) {
 				store := mocks.NewIStorage(t)
-				store.On("StoreDicomFile", mock.Anything).Return("location", nil)
-				return store
+				repo := mocks.NewIRepository(t)
+				store.On("StoreDicomFile", mock.Anything, mock.Anything).Return("location", nil)
+				repo.On("CreateDicomDocument", mock.Anything, mock.Anything).Return(models.DicomFile{
+					Name: "test.dcm",
+				}, nil)
+
+				return store, repo
 			},
 			want: models.DicomFile{
 				Name: "test.dcm",
@@ -62,18 +61,19 @@ func TestCreateDicomDocument(t *testing.T) {
 					Filename: "test.dcm",
 				},
 			},
-			setupMock: func() *mocks.IStorage {
+			setupMock: func() (*mocks.IStorage, *mocks.IRepository) {
 				store := mocks.NewIStorage(t)
-				store.On("StoreDicomFile", mock.Anything).Return("", errors.New("error"))
-				return store
+				repo := mocks.NewIRepository(t)
+				store.On("StoreDicomFile", mock.Anything, mock.Anything).Return("", errors.New("error"))
+				return store, repo
 			},
 			wantErr: true,
 		},
 	}
 
 	for _, test := range tests {
-		store := test.setupMock()
-		s := NewDicomDocumentService(store)
+		store, repo := test.setupMock()
+		s := NewDicomDocumentService(store, repo)
 
 		c := echo.New().NewContext(req, httptest.NewRecorder())
 		doc, err := s.CreateDicomDocument(c, test.input)

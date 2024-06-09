@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 
 	"dicom-parser-app/client"
 )
@@ -43,6 +44,7 @@ func (h *Handler) Create() echo.HandlerFunc {
 		c.Logger().Info(doc)
 
 		createResponse := client.CreateDicomDocumentResponse{
+			ID:       doc.ID,
 			Name:     doc.Name,
 			Location: doc.Location,
 		}

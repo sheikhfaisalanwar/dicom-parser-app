@@ -3,6 +3,9 @@ FROM --platform=$BUILDPLATFORM golang:1.22-alpine AS builder
 
 WORKDIR /app
 
+RUN apk update \
+  && apk add aws-cli
+
 ENV CGO_ENABLED 0
 ENV GOPATH /go
 ENV GOCACHE /go-build

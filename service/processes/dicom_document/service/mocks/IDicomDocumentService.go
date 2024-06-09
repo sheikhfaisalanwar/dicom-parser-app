@@ -47,22 +47,118 @@ func (_m *IDicomDocumentService) CreateDicomDocument(ctx echo.Context, params cl
 	return r0, r1
 }
 
-// GetDicomDocument provides a mock function with given fields:
-func (_m *IDicomDocumentService) GetDicomDocument() string {
-	ret := _m.Called()
+// GetDicomDocumentByID provides a mock function with given fields: ctx, id
+func (_m *IDicomDocumentService) GetDicomDocumentByID(ctx echo.Context, id string) (models.DicomFile, error) {
+	ret := _m.Called(ctx, id)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetDicomDocument")
+		panic("no return value specified for GetDicomDocumentByID")
+	}
+
+	var r0 models.DicomFile
+	var r1 error
+	if rf, ok := ret.Get(0).(func(echo.Context, string) (models.DicomFile, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(echo.Context, string) models.DicomFile); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(models.DicomFile)
+	}
+
+	if rf, ok := ret.Get(1).(func(echo.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetDicomDocumentDataByIDandTag provides a mock function with given fields: ctx, id, request
+func (_m *IDicomDocumentService) GetDicomDocumentDataByIDandTag(ctx echo.Context, id string, request client.GetDicomDocumentDataByIDandTagRequest) (string, error) {
+	ret := _m.Called(ctx, id, request)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDicomDocumentDataByIDandTag")
 	}
 
 	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
+	var r1 error
+	if rf, ok := ret.Get(0).(func(echo.Context, string, client.GetDicomDocumentDataByIDandTagRequest) (string, error)); ok {
+		return rf(ctx, id, request)
+	}
+	if rf, ok := ret.Get(0).(func(echo.Context, string, client.GetDicomDocumentDataByIDandTagRequest) string); ok {
+		r0 = rf(ctx, id, request)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
-	return r0
+	if rf, ok := ret.Get(1).(func(echo.Context, string, client.GetDicomDocumentDataByIDandTagRequest) error); ok {
+		r1 = rf(ctx, id, request)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetDocumentDataByID provides a mock function with given fields: ctx, id
+func (_m *IDicomDocumentService) GetDocumentDataByID(ctx echo.Context, id string) (models.DicomFile, error) {
+	ret := _m.Called(ctx, id)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetDocumentDataByID")
+	}
+
+	var r0 models.DicomFile
+	var r1 error
+	if rf, ok := ret.Get(0).(func(echo.Context, string) (models.DicomFile, error)); ok {
+		return rf(ctx, id)
+	}
+	if rf, ok := ret.Get(0).(func(echo.Context, string) models.DicomFile); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(models.DicomFile)
+	}
+
+	if rf, ok := ret.Get(1).(func(echo.Context, string) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListDocuments provides a mock function with given fields: ctx
+func (_m *IDicomDocumentService) ListDocuments(ctx echo.Context) ([]models.DicomFile, error) {
+	ret := _m.Called(ctx)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ListDocuments")
+	}
+
+	var r0 []models.DicomFile
+	var r1 error
+	if rf, ok := ret.Get(0).(func(echo.Context) ([]models.DicomFile, error)); ok {
+		return rf(ctx)
+	}
+	if rf, ok := ret.Get(0).(func(echo.Context) []models.DicomFile); ok {
+		r0 = rf(ctx)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]models.DicomFile)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(echo.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // NewIDicomDocumentService creates a new instance of IDicomDocumentService. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
