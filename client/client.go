@@ -2,8 +2,6 @@ package client
 
 import (
 	"mime/multipart"
-
-	"github.com/suyashkumar/dicom"
 )
 
 type IClient interface {
@@ -33,8 +31,8 @@ type ListDicomDocumentsResponse struct {
 }
 
 type GetDocumentDataResponse struct {
-	ID   string        `json:"id"`
-	Data dicom.Dataset `json:"data"`
+	ID   string `json:"id"`
+	Data string `json:"data"`
 }
 
 type GetDicomDocumentDataByIDandTagRequest struct {

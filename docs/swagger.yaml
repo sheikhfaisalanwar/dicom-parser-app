@@ -1,0 +1,187 @@
+definitions:
+  client.CreateDicomDocumentResponse:
+    properties:
+      id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+    type: object
+  client.GetDicomDocumentDataByIDandTagResponse:
+    properties:
+      id:
+        type: string
+      value:
+        type: string
+    type: object
+  client.GetDicomDocumentResponse:
+    properties:
+      id:
+        type: string
+      location:
+        type: string
+      name:
+        type: string
+    type: object
+  client.GetDocumentDataResponse:
+    properties:
+      data:
+        type: string
+      id:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /create:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Uploads a new Dicom Document to the server and creates a record
+        in the database
+      parameters:
+      - description: Dicom file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/client.CreateDicomDocumentResponse'
+        "400":
+          description: No file found in form
+          schema:
+            type: string
+        "500":
+          description: Error uploading dicom document
+          schema:
+            type: string
+      summary: Create a new Dicom Document
+      tags:
+      - create
+  /get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a Dicom Document by its ID
+      parameters:
+      - description: Dicom Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/client.GetDicomDocumentResponse'
+        "400":
+          description: No file name provided
+          schema:
+            type: string
+        "500":
+          description: Error getting dicom document
+          schema:
+            type: string
+      summary: Get a Dicom Document by ID
+      tags:
+      - get
+  /get/{id}/data:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the data of a Dicom Document by its ID
+      parameters:
+      - description: Dicom Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/client.GetDocumentDataResponse'
+        "400":
+          description: No file name provided
+          schema:
+            type: string
+        "500":
+          description: Error getting dicom document
+          schema:
+            type: string
+      summary: Get Dicom Document data by ID
+      tags:
+      - get
+  /get/{id}/tag:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves the data of a Dicom Document by its ID and a DICOM tag
+      parameters:
+      - description: Dicom Document ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: DICOM Group
+        in: body
+        name: group
+        required: true
+        schema:
+          type: string
+      - description: DICOM Element
+        in: body
+        name: element
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/client.GetDicomDocumentDataByIDandTagResponse'
+        "400":
+          description: Could not parse group and element from request
+          schema:
+            type: string
+        "500":
+          description: Error getting dicom document
+          schema:
+            type: string
+      summary: Get Dicom Document data by ID and Tag
+      tags:
+      - get
+  /get/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all Dicom Documents
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/client.GetDicomDocumentResponse'
+            type: array
+        "500":
+          description: Error getting dicom documents
+          schema:
+            type: string
+      summary: Get all Dicom Documents
+      tags:
+      - get
+swagger: "2.0"

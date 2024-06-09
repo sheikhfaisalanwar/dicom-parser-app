@@ -15,6 +15,18 @@ func Setup() echo.HandlerFunc {
 	}
 }
 
+// Create godoc
+// @Summary Create a new Dicom Document
+// @Description Uploads a new Dicom Document to the server and creates a record in the database
+// @Tags create
+// @Accept  mpfd
+// @Produce  json
+// @Param file formData file true "Dicom file"
+// @Success 200 {object} client.CreateDicomDocumentResponse
+// @Failure 400 {object} string "Could not get multipart form"
+// @Failure 400 {object} string "No file found in form"
+// @Failure 500 {object} string "Error uploading dicom document"
+// @Router /create [post]
 func (h *Handler) Create() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		form, err := c.MultipartForm()

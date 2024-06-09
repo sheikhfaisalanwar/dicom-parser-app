@@ -73,6 +73,8 @@ func (d *DicomDocumentService) GetDicomDocumentDataByIDandTag(ctx echo.Context, 
 		return "", err
 	}
 
+	ctx.Logger().Infof("Attempting query for tag: %v", request)
+
 	tagToFind := tag.Tag{
 		Group:   request.Group,
 		Element: request.Element,
