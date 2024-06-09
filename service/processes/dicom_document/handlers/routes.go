@@ -9,5 +9,12 @@ func (h *Handler) RegisterRoutes(
 ) {
 	group := router.Group("/dicom_document")
 
+	// GET
+	group.GET("/:id", h.GetByID())
+	group.GET("/:id/data", h.GetDataByID())
+	group.GET("/", h.GetAll())
+	group.GET("/:id/tag", h.GetDicomDocumentDataByIDandTag())
+
+	// POST
 	group.POST("/create", h.Create())
 }

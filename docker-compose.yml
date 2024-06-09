@@ -1,4 +1,8 @@
-version: "3.5"
+version: "3.8"
+
+networks:
+    default:
+       name: dicom-parser-app
 
 services:
   dicom-parser-app:
@@ -9,7 +13,8 @@ services:
       - 1323:1323
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+    env_file:
+      - ./docker/.env
 
   dynamodb-local:
     command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
@@ -20,3 +25,30 @@ services:
     volumes:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
+
+  dicom-documents-create-tables:
+    image: "amazon/aws-cli:latest"
+    working_dir: /home/dynamodb
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        set -e
+        aws dynamodb create-table --cli-input-json file://dicom-document-localhost.json --endpoint-url http://dynamodb-local:8000
+    env_file:
+      - ./docker/.env
+    volumes:
+      - ./docker/dynamodb/tables:/home/dynamodb
+    depends_on:
+      - dynamodb-local
+
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq

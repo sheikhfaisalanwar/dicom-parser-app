@@ -17,17 +17,13 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+const TestFileDirectory = "../../../../tests/assets/test_dicom_files/test1.dcm"
+
 func TestNewDicomDocumentService(t *testing.T) {
 	store := mocks.NewIStorage(t)
-	s := NewDicomDocumentService(store)
+	repo := mocks.NewIRepository(t)
+	s := NewDicomDocumentService(store, repo)
 	assert.NotNil(t, s)
-}
-
-func TestGetDicomDocument(t *testing.T) {
-	store := mocks.NewIStorage(t)
-	s := NewDicomDocumentService(store)
-	result := s.GetDicomDocument()
-	assert.Equal(t, "Dicom Document", result)
 }
 
 func TestCreateDicomDocument(t *testing.T) {
@@ -36,7 +32,7 @@ func TestCreateDicomDocument(t *testing.T) {
 
 	tests := []struct {
 		input     client.CreateDicomDocumentRequest
-		setupMock func() *mocks.IStorage
+		setupMock func() (*mocks.IStorage, *mocks.IRepository)
 		want      models.DicomFile
 		wantErr   bool
 	}{
@@ -46,10 +42,15 @@ func TestCreateDicomDocument(t *testing.T) {
 					Filename: "test.dcm",
 				},
 			},
-			setupMock: func() *mocks.IStorage {
+			setupMock: func() (*mocks.IStorage, *mocks.IRepository) {
 				store := mocks.NewIStorage(t)
-				store.On("StoreDicomFile", mock.Anything).Return("location", nil)
-				return store
+				repo := mocks.NewIRepository(t)
+				store.On("StoreDicomFile", mock.Anything, mock.Anything).Return("location", nil)
+				repo.On("CreateDicomDocument", mock.Anything, mock.Anything).Return(models.DicomFile{
+					Name: "test.dcm",
+				}, nil)
+
+				return store, repo
 			},
 			want: models.DicomFile{
 				Name: "test.dcm",
@@ -62,18 +63,19 @@ func TestCreateDicomDocument(t *testing.T) {
 					Filename: "test.dcm",
 				},
 			},
-			setupMock: func() *mocks.IStorage {
+			setupMock: func() (*mocks.IStorage, *mocks.IRepository) {
 				store := mocks.NewIStorage(t)
-				store.On("StoreDicomFile", mock.Anything).Return("", errors.New("error"))
-				return store
+				repo := mocks.NewIRepository(t)
+				store.On("StoreDicomFile", mock.Anything, mock.Anything).Return("", errors.New("error"))
+				return store, repo
 			},
 			wantErr: true,
 		},
 	}
 
 	for _, test := range tests {
-		store := test.setupMock()
-		s := NewDicomDocumentService(store)
+		store, repo := test.setupMock()
+		s := NewDicomDocumentService(store, repo)
 
 		c := echo.New().NewContext(req, httptest.NewRecorder())
 		doc, err := s.CreateDicomDocument(c, test.input)
@@ -83,6 +85,51 @@ func TestCreateDicomDocument(t *testing.T) {
 		}
 		assert.NoError(t, err)
 		assert.Equal(t, test.want.Name, doc.Name)
+	}
+}
+
+func TestGetDicomDocumentDataByIDandTag(t *testing.T) {
+	tests := []struct {
+		name      string
+		id        string
+		request   client.GetDicomDocumentDataByIDandTagRequest
+		setupMock func() *mocks.IRepository
+		want      string
+		wantErr   bool
+	}{
+		{
+			name: "Valid ID and Tag",
+			id:   "testID",
+			request: client.GetDicomDocumentDataByIDandTagRequest{
+				Group:   0002,
+				Element: 0000,
+			},
+			setupMock: func() *mocks.IRepository {
+				repo := new(mocks.IRepository)
+				repo.On("GetDicomDocumentByID", mock.Anything, "testID").Return(models.DicomFile{
+					Name:     "test1.dcm",
+					Location: TestFileDirectory,
+				}, nil)
+				return repo
+			},
+			want:    "testValue",
+			wantErr: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repo := test.setupMock()
+			s := NewDicomDocumentService(nil, repo)
+
+			got, err := s.GetDicomDocumentDataByIDandTag(nil, test.id, test.request)
+			if test.wantErr {
+				assert.Error(t, err)
+				return
+			}
+			assert.NoError(t, err)
+			assert.NotNil(t, got)
+		})
 	}
 }
 

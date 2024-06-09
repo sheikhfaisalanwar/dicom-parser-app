@@ -13,9 +13,9 @@ type IStorage struct {
 	mock.Mock
 }
 
-// StoreDicomFile provides a mock function with given fields: file
-func (_m *IStorage) StoreDicomFile(file multipart.FileHeader) (string, error) {
-	ret := _m.Called(file)
+// StoreDicomFile provides a mock function with given fields: id, file
+func (_m *IStorage) StoreDicomFile(id string, file multipart.FileHeader) (string, error) {
+	ret := _m.Called(id, file)
 
 	if len(ret) == 0 {
 		panic("no return value specified for StoreDicomFile")
@@ -23,17 +23,17 @@ func (_m *IStorage) StoreDicomFile(file multipart.FileHeader) (string, error) {
 
 	var r0 string
 	var r1 error
-	if rf, ok := ret.Get(0).(func(multipart.FileHeader) (string, error)); ok {
-		return rf(file)
+	if rf, ok := ret.Get(0).(func(string, multipart.FileHeader) (string, error)); ok {
+		return rf(id, file)
 	}
-	if rf, ok := ret.Get(0).(func(multipart.FileHeader) string); ok {
-		r0 = rf(file)
+	if rf, ok := ret.Get(0).(func(string, multipart.FileHeader) string); ok {
+		r0 = rf(id, file)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(multipart.FileHeader) error); ok {
-		r1 = rf(file)
+	if rf, ok := ret.Get(1).(func(string, multipart.FileHeader) error); ok {
+		r1 = rf(id, file)
 	} else {
 		r1 = ret.Error(1)
 	}

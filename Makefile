@@ -29,3 +29,28 @@ run:
 .PHONY: run-docker
 run-docker:
 	docker compose up --build --force-recreate --detach
+
+
+.PHONY: unit-test
+unit-test: ## Run all tests other than the integration tests in the tests folder
+	go test -v ./... | grep -v '\(tests\)'
+
+
+.PHONY: integration-test
+integration-test: ## Run the integration tests in the tests folder
+	go test -v ./tests/...
+
+.PHONY: docker-dynamodb-local-setup
+docker-dynamodb-local-setup:
+	echo Checking if Dynamo is running
+	until docker run --rm -it --network dicom-parser-app --env-file ./docker/.env \
+       -it amazon/aws-cli dynamodb list-tables --endpoint-url http://dynamodb-local:8000; do \
+	   echo "Dynamo is not running yet"; \
+	   sleep 2; \
+   	done
+
+	echo Creating tables
+	docker run -v ./docker/dynamodb:/home/dynamodb --workdir /home/dynamodb --env-file ./docker/.env \
+   		--rm --network dicom-parser-app \
+	   	-it amazon/aws-cli dynamodb create-table --cli-input-json file://./docker/dynamodb/tables/dicom-document-localhost.json \
+	    --endpoint-url http://dynamodb-local:8000
