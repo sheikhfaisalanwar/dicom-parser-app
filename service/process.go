@@ -14,7 +14,10 @@ import (
 	"dicom-parser-app/service/processes/dicom_document/repository"
 	"dicom-parser-app/service/processes/dicom_document/service"
 
+	_ "dicom-parser-app/docs"
+
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type Config struct {
@@ -41,6 +44,7 @@ func InitServer() {
 	e.Use(logMiddleware)
 
 	e.GET("/", handlers.Setup())
+	e.GET("/docs/*", echoSwagger.WrapHandler)
 
 	// initialize storage
 	storage := repository.NewDicomFileStorage()
@@ -74,4 +78,5 @@ func InitServer() {
 	}
 	os.WriteFile("routes.json", data, 0644)
 	e.Logger.Fatal(e.Start(":1323"))
+
 }

@@ -44,7 +44,7 @@ make unit-test
 ```
 
 ## API Documentation
-The API documentation can be found in the `docs` folder
+The API documentation can be found in the `docs` folder or after getting the application running, you can access the Swagger UI at `http://localhost:1323/docs/index.html`
 
 ## Architecture
 
