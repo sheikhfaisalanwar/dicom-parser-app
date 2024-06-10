@@ -54,6 +54,11 @@ func (d *DicomDocumentService) GetDocumentDataByID(ctx echo.Context, id string) 
 		return models.DicomFile{}, errors.New("document location is not set")
 	}
 	parsedDoc, err := d.parseDicomFile(doc)
+
+	if err != nil {
+		return models.DicomFile{}, err
+	}
+
 	if err != nil {
 		return models.DicomFile{}, err
 	}
@@ -72,8 +77,6 @@ func (d *DicomDocumentService) GetDicomDocumentDataByIDandTag(ctx echo.Context, 
 	if err != nil {
 		return "", err
 	}
-
-	ctx.Logger().Infof("Attempting query for tag: %v", request)
 
 	tagToFind := tag.Tag{
 		Group:   request.Group,

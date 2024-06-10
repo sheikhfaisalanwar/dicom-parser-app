@@ -1,0 +1,58 @@
+{
+  "TableName" : "dicom-datasets-LOCAL",
+  "KeySchema": [
+      {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+      }
+  ],
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "id",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "document_id",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "data",
+      "AttributeType": "S"
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "document-id-index",
+      "KeySchema": [
+        {
+          "AttributeName": "document_id",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    },
+    {
+      "IndexName": "data-index",
+      "KeySchema": [
+        {
+          "AttributeName": "data",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ],
+  "BillingMode": "PAY_PER_REQUEST"
+}

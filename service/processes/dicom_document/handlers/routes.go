@@ -6,9 +6,10 @@ import (
 
 func (h *Handler) RegisterRoutes(
 	router *echo.Echo,
+	m ...echo.MiddlewareFunc,
 ) {
 	group := router.Group("/dicom_document")
-
+	group.Use(m...)
 	// GET
 	group.GET("/:id", h.GetByID())
 	group.GET("/:id/data", h.GetDataByID())
