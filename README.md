@@ -66,11 +66,13 @@ The application is structured as follows:
 
 ## Improvements
 - Add more test coverage
-- Add error definitions
+- Add standardized error definitions
+- Add standardized response definitions
 - Add stricter request validation/authorization middlewares
 - Async parsing of the DICOM files
-- Replace the the local store with Azure Blob Storage Emulator for local dev
-- Refactor parsing package implementation leakage
+- Replace the local store with Azure Blob Storage Emulator for local dev
+- Refactor dicom parsing package implementation leakage
+- Cross service interaction should be handlers or message bus
 
 
 

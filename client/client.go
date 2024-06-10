@@ -35,6 +35,19 @@ type GetDocumentDataResponse struct {
 	Data string `json:"data"`
 }
 
+type GetElementByTagRequest struct {
+	Tag string `json:"tag"`
+}
+
+type GetElementByTagNameRequest struct {
+	TagName string `json:"tag_name"`
+}
+
+type GetDocumentTagsResponse struct {
+	DocumentID string   `json:"document_id"`
+	Tags       []string `json:"tags"`
+}
+
 type GetDicomDocumentDataByIDandTagRequest struct {
 	Group   uint16 `json:"group"`
 	Element uint16 `json:"element"`
