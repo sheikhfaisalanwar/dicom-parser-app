@@ -29,7 +29,9 @@ make run-docker
 ```
 
 ## HOW TO USE
-Here's a link to the Postman collection that you can use to interact with the API:
+Here's a link to the Postman collection that you can use to interact with the API.
+
+**Make sure to set the Postman environment to LOCAL so that the appropriate collection variables get set.**
 
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/1162575-a532fdc9-d543-4056-a784-da3cba005d74?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D1162575-a532fdc9-d543-4056-a784-da3cba005d74%26entityType%3Dcollection%26workspaceId%3D65d14c3a-851f-4f1b-a02a-a7543937f242)
 
@@ -93,6 +95,7 @@ sequenceDiagram
 
 
 ## Improvements
+- Still need to confirm issues with the PNG image generation. Returning a blacked out image now.
 - Be able to create DICOM idempotent records by sequence number
 - Add more test coverage
 - Add standardized error definitions
