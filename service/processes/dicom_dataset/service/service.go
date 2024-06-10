@@ -2,6 +2,8 @@ package service
 
 import (
 	"fmt"
+	"image/png"
+	"os"
 	"strings"
 
 	"dicom-parser-app/client"
@@ -11,6 +13,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/suyashkumar/dicom"
+	"github.com/suyashkumar/dicom/pkg/tag"
 )
 
 type IDicomDatasetService interface {
@@ -27,7 +30,7 @@ type IDicomDatasetService interface {
 	GetDicomElementByTagNameAndDocumentID(ctx echo.Context, id string, tagName string) (*dicom.Element, error)
 
 	// GetDicomImageByDocumentID returns a dicom image from a document
-	GetDicomImageByDocumentID(ctx echo.Context, id string) (models.DicomDataset, error)
+	GetDicomImageByDocumentID(ctx echo.Context, id string) (*os.File, error)
 }
 
 type DicomDatasetService struct {
@@ -95,23 +98,63 @@ func (d *DicomDatasetService) GetDicomElementByTagNameAndDocumentID(ctx echo.Con
 	for iter := doc.Data.FlatStatefulIterator(); iter.HasNext(); {
 		element := iter.Next()
 		if strings.Contains(element.String(), tagName) {
-			fmt.Println(element)
 			ctx.Logger().Infof("Element found with tag: %s", tagName)
 			return element, nil
 		}
-		fmt.Println("Element not found")
-		ctx.Logger().Error("Element not found")
 	}
 	return &dicom.Element{}, nil
 }
 
 // GetDicomImageByDocumentID returns a dicom image from a document
-func (d *DicomDatasetService) GetDicomImageByDocumentID(ctx echo.Context, id string) (models.DicomDataset, error) {
-	dataset := models.DicomDataset{DocumentID: id}
-	_, err := d.documentService.GetDocumentDataByID(ctx, id)
+func (d *DicomDatasetService) GetDicomImageByDocumentID(ctx echo.Context, id string) (*os.File, error) {
+	//data := models.DicomDataset{DocumentID: id}
+	var pngFile *os.File
+	dataset, err := d.documentService.GetDocumentDataByID(ctx, id)
 	if err != nil {
 		ctx.Logger().Error("Could not get document data by id")
-		return dataset, err
+		return pngFile, err
 	}
-	return dataset, nil
+
+	// Find pixel data elements
+	var allPixelData []*dicom.Element
+	for iter := dataset.Data.FlatStatefulIterator(); iter.HasNext(); {
+		e := iter.Next()
+		if e.Tag == tag.PixelData {
+			allPixelData = append(allPixelData, e)
+			ctx.Logger().Infof("Element found with tag: %s", tag.PixelData)
+		}
+	}
+	fmt.Println(allPixelData)
+
+	pixelDataElement, err := dataset.Data.FindElementByTagNested(tag.PixelData)
+	if err != nil {
+		ctx.Logger().Error("Error finding pixel data in document")
+		return pngFile, err
+	}
+	pixelDataInfo := dicom.MustGetPixelDataInfo(pixelDataElement.Value)
+	fmt.Println(pixelDataInfo.Frames)
+	fmt.Println(len(pixelDataInfo.Frames))
+	for i, fr := range pixelDataInfo.Frames {
+		img, _ := fr.GetImage()
+		pngFile, err = os.Create(fmt.Sprintf("image_%d.png", i))
+		if err != nil {
+			fmt.Println(err)
+			ctx.Logger().Error("Error creating image file")
+			return pngFile, err
+		}
+		err := png.Encode(pngFile, img)
+		if err != nil {
+			fmt.Println(err)
+			ctx.Logger().Error("Error encoding image to png")
+			return pngFile, err
+		}
+		err = pngFile.Close()
+		if err != nil {
+			fmt.Println(err)
+			ctx.Logger().Error("Error closing image file")
+			return pngFile, err
+		}
+	}
+
+	return pngFile, nil
 }

@@ -1,0 +1,77 @@
+[
+  {
+    "method": "GET",
+    "path": "/dicom_data/:id/tag-name",
+    "name": "dicom-parser-app/service/processes/dicom_dataset/handlers.(*Handler).RegisterRoutes.(*Handler).GetDataByIDAndTagName.func3"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_document/:id",
+    "name": "dicom-parser-app/service/processes/dicom_document/handlers.(*Handler).RegisterRoutes.(*Handler).GetByID.func1"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_document/",
+    "name": "dicom-parser-app/service/processes/dicom_document/handlers.(*Handler).RegisterRoutes.(*Handler).GetAll.func3"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_document/:id/tag",
+    "name": "dicom-parser-app/service/processes/dicom_document/handlers.(*Handler).RegisterRoutes.(*Handler).GetDicomDocumentDataByIDandTag.func4"
+  },
+  {
+    "method": "POST",
+    "path": "/dicom_document/create",
+    "name": "dicom-parser-app/service/processes/dicom_document/handlers.(*Handler).RegisterRoutes.(*Handler).Create.func5"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_data/:id/tags",
+    "name": "dicom-parser-app/service/processes/dicom_dataset/handlers.(*Handler).RegisterRoutes.(*Handler).GetDataByID.func1"
+  },
+  {
+    "method": "echo_route_not_found",
+    "path": "/dicom_data/*",
+    "name": "github.com/labstack/echo/v4.init.func1"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_data/:id/image",
+    "name": "dicom-parser-app/service/processes/dicom_dataset/handlers.(*Handler).RegisterRoutes.(*Handler).GetImageByDocumentID.func4"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_data/",
+    "name": "dicom-parser-app/service/processes/dicom_dataset/handlers.(*Handler).RegisterRoutes.(*Handler).Setup.func5"
+  },
+  {
+    "method": "echo_route_not_found",
+    "path": "/dicom_data",
+    "name": "github.com/labstack/echo/v4.init.func1"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_data/:id/tag",
+    "name": "dicom-parser-app/service/processes/dicom_dataset/handlers.(*Handler).RegisterRoutes.(*Handler).GetDataByIDAndTag.func2"
+  },
+  {
+    "method": "echo_route_not_found",
+    "path": "/dicom_document",
+    "name": "github.com/labstack/echo/v4.init.func1"
+  },
+  {
+    "method": "GET",
+    "path": "/dicom_document/:id/data",
+    "name": "dicom-parser-app/service/processes/dicom_document/handlers.(*Handler).RegisterRoutes.(*Handler).GetDataByID.func2"
+  },
+  {
+    "method": "GET",
+    "path": "/",
+    "name": "dicom-parser-app/service.InitServer.Setup.func1"
+  },
+  {
+    "method": "echo_route_not_found",
+    "path": "/dicom_document/*",
+    "name": "github.com/labstack/echo/v4.init.func1"
+  }
+]

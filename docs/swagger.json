@@ -48,6 +48,200 @@
                 }
             }
         },
+        "/dicom_data/{id}/image": {
+            "get": {
+                "description": "Retrieves the image of a Dicom Document by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "get"
+                ],
+                "summary": "Get Dicom Document image by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dicom Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "No document ID provided",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to generate image from document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/dicom_data/{id}/tag": {
+            "get": {
+                "description": "Retrieves the data of a Dicom Header Attribute by its ID and a DICOM tag",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "get"
+                ],
+                "summary": "Get Dicom Document data by ID and Tag",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dicom Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "DICOM Tag",
+                        "name": "tag",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error getting dicom document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/dicom_data/{id}/tag-name": {
+            "get": {
+                "description": "Retrieves the data of a Dicom Header Attribute by its ID and a DICOM tag name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "get"
+                ],
+                "summary": "Get Dicom Document data by ID and Tag Name",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dicom Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "DICOM Tag Name",
+                        "name": "tagName",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error getting dicom document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/dicom_data/{id}/tags": {
+            "get": {
+                "description": "Retrieves the tags of a Dicom Document by its ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "get"
+                ],
+                "summary": "Get All Dicom Document tags by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Dicom Document ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/client.GetDocumentTagsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "No document ID provided",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Error getting dicom document",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/get/all": {
             "get": {
                 "description": "Retrieves all Dicom Documents",
@@ -279,6 +473,20 @@
                 },
                 "id": {
                     "type": "string"
+                }
+            }
+        },
+        "client.GetDocumentTagsResponse": {
+            "type": "object",
+            "properties": {
+                "document_id": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         }

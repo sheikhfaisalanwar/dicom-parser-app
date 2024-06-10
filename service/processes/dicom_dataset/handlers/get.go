@@ -16,7 +16,18 @@ func (h *Handler) Setup() echo.HandlerFunc {
 	}
 }
 
-func (h *Handler) GetDataByID() echo.HandlerFunc {
+// GetDocumentTagsByID godoc
+// @Summary Get All Dicom Document tags by ID
+// @Description Retrieves the tags of a Dicom Document by its ID
+// @Tags get
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Dicom Document ID"
+// @Success 200 {object} client.GetDocumentTagsResponse
+// @Failure 400 {object} string "No document ID provided"
+// @Failure 500 {object} string "Error getting dicom document"
+// @Router /dicom_data/{id}/tags [get]
+func (h *Handler) GetDocumentTagsByID() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		docID := c.Param("id")
 		if docID == "" {
@@ -35,6 +46,19 @@ func (h *Handler) GetDataByID() echo.HandlerFunc {
 	}
 }
 
+// GetDataByIDAndTag godoc
+// @Summary Get Dicom Document data by ID and Tag
+// @Description Retrieves the data of a Dicom Header Attribute by its ID and a DICOM tag
+// @Tags get
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Dicom Document ID"
+// @Param tag body string true "DICOM Tag"
+// @Success 200 {object} string
+// @Failure 400 {object} string "No file name provided"
+// @Failure 400 {object} string "Invalid request"
+// @Failure 500 {object} string "Error getting dicom document"
+// @Router /dicom_data/{id}/tag [get]
 func (h *Handler) GetDataByIDAndTag() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		docID := c.Param("id")
@@ -62,6 +86,19 @@ func (h *Handler) GetDataByIDAndTag() echo.HandlerFunc {
 	}
 }
 
+// GetDataByIDAndTagName godoc
+// @Summary Get Dicom Document data by ID and Tag Name
+// @Description Retrieves the data of a Dicom Header Attribute by its ID and a DICOM tag name
+// @Tags get
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Dicom Document ID"
+// @Param tagName body string true "DICOM Tag Name"
+// @Success 200 {object} string
+// @Failure 400 {object} string "No document ID provided"
+// @Failure 400 {object} string "Invalid request"
+// @Failure 500 {object} string "Error getting dicom document"
+// @Router /dicom_data/{id}/tag-name [get]
 func (h *Handler) GetDataByIDAndTagName() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		docID := c.Param("id")
@@ -86,5 +123,38 @@ func (h *Handler) GetDataByIDAndTagName() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusOK, element)
+	}
+}
+
+// GetImageByDocumentID godoc
+// @Summary Get Dicom Document image by ID
+// @Description Retrieves the image of a Dicom Document by its ID
+// @Tags get
+// @Accept  json
+// @Produce  json
+// @Param id path string true "Dicom Document ID"
+// @Success 200 {object} string
+// @Failure 400 {object} string "No document ID provided
+// @Failure 500 {object} string "Failed to generate image from document"
+// @Router /dicom_data/{id}/image [get]
+func (h *Handler) GetImageByDocumentID() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		docID := c.Param("id")
+		if docID == "" {
+			return c.JSON(http.StatusBadRequest, "No document id provided")
+		}
+
+		c.Logger().Infof("Getting image for document %s", docID)
+
+		pngFile, err := h.service.GetDicomImageByDocumentID(c, docID)
+		if err != nil {
+			c.Logger().Error(err)
+			return c.JSON(http.StatusInternalServerError, "Failed to generate image from document")
+		}
+		if pngFile == nil {
+			return c.JSON(http.StatusInternalServerError, "Failed to generate image from document")
+		}
+
+		return c.File(pngFile.Name())
 	}
 }
