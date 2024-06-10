@@ -4,7 +4,9 @@
 This is a simple docker application that allows you to 
 - Create DICOM document records
 - Read DICOM document records
-  - Read all the Data Elements in a document
+  - Get all DICOM document records
+  - Get a specific DICOM document record by its ID
+  - Get all tags in a DICOM document record by its ID
   - Read a specific element in a document by its tag
 - Convert DICOM document records to a PNG image
 
@@ -20,6 +22,7 @@ This is a simple docker application that allows you to
 - Docker Compose
 - Make
 - Go 1.22.4
+- Postman Desktop Agent for testing
 
 1. Clone the repository
 2. Run the following commands
@@ -29,7 +32,7 @@ make run-docker
 ```
 
 ## HOW TO USE
-Here's a link to the Postman collection that you can use to interact with the API.
+Here's a link to the Postman collection that you can use to interact with the API. Since the requests are to `localhost`, you will need to open the collection inPostman Desktop Agent to run the requests.
 
 **Make sure to set the Postman environment to LOCAL so that the appropriate collection variables get set.**
 
